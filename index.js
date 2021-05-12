@@ -47,7 +47,14 @@ pool.query("SELECT * FROM mouse", (error, results) => {
   app.set("view engine", "eta");
   app.set("views", "./views");
   app.get("/", (_, res) => {
-    res.render("index", { scroll, clicks });
+    const date = new Date();
+    res.render("index", {
+      scroll,
+      clicks,
+      hours: date.getHours().toString().padStart(2, "0"),
+      minutes: date.getMinutes().toString().padStart(2, "0"),
+      seconds: date.getSeconds().toString().padStart(2, "0"),
+    });
   });
 
   io.on("connection", (socket) => {

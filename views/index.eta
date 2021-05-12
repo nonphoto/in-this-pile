@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>In This Pile</title>
+    <link rel="stylesheet" href="/index.css" />
     <script type="module">
       import "/socket.io/socket.io.js";
       const socket = io();
@@ -19,6 +20,7 @@
     </script>
   </head>
   <body>
+    <p class="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
     <p data-name="clicks"><%= it.clicks %></p>
     <p data-name="scroll"><%= it.scroll %></p>
   </body>

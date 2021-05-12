@@ -1,0 +1,32 @@
+@font-face {
+  font-family: ArialPile;
+  src: url("/ArialPile.otf") format("opentype");
+}
+
+:root {
+  --beige: #f2ece4;
+  --gold: #bda475;
+  --gray-brown: #6b6558;
+  --light-gray: #cfcbc7;
+  --gray: #ababab;
+  --brown: #665635;
+  --blue: #79a4b5;
+  --black: #161717;
+}
+
+html {
+  font-family: ArialPile, Arial, Helvetica, sans-serif;
+  font-size: calc(50% + 1.111vw);
+  background-color: var(--beige);
+}
+
+.date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  color: var(--light-gray);
+  font-size: calc(24vw);
+}
