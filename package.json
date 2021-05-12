@@ -19,6 +19,7 @@
   "homepage": "https://github.com/nonphoto/in-this-pile#readme",
   "dependencies": {
     "dotenv": "^9.0.2",
+    "eta": "^1.12.1",
     "express": "^4.17.1",
     "pg": "^8.6.0",
     "socket.io": "^4.1.1"

@@ -4,6 +4,7 @@ const cors = require("cors");
 const http = require("http");
 const { Pool } = require("pg");
 const { Server } = require("socket.io");
+const eta = require("eta");
 
 console.log("Connecting to database", process.env.DATABASE_URL);
 const pool = new Pool({
@@ -42,6 +43,12 @@ pool.query("SELECT * FROM mouse", (error, results) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use(express.static("public"));
+  app.engine("eta", eta.renderFile);
+  app.set("view engine", "eta");
+  app.set("views", "./views");
+  app.get("/", (_, res) => {
+    res.render("index", { scroll, clicks });
+  });
 
   io.on("connection", (socket) => {
     console.log("A user connected");
