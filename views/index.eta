@@ -8,20 +8,54 @@
     <link rel="stylesheet" href="/index.css" />
     <script type="module">
       import "/socket.io/socket.io.js";
+      import S from "/s.js";
+
+      const clicksElement = document.getElementById("clicks");
+      const scrollElement = document.getElementById("scroll");
+      const clockElement = document.getElementById("clock");
+
       const socket = io();
-      const clicksElement = document.querySelector(`[data-name="clicks"]`);
-      const scrollElement = document.querySelector(`[data-name="scroll"]`);
       socket.on("clicks", (clicks) => {
         clicksElement.textContent = clicks;
       });
       socket.on("scroll", (scroll) => {
         scrollElement.textContent = scroll;
       });
+
+      const windowSize = S.data([window.innerWidth, window.innerHeight]);
+      window.addEventListener("resize", () => {
+        windowSize([window.innerWidth, window.innerHeight]);
+      });
+
+      S.root(() => {
+        const angle = -Math.PI / 2;
+        Array.from(clockElement.children).map((child, index) => {
+          S(() => {
+            const [width, height] = windowSize();
+            const a = angle + (index * Math.PI) / 4;
+            const x = (Math.cos(a) * width) / 2.1;
+            const y = (Math.sin(a) * height) / 2.1;
+            const px = Math.cos(a) * -50 - 50;
+            const py = Math.sin(a) * -50 - 50;
+            child.style.transform = `translate(${x}px, ${y}px)  translate(${px}%, ${py}%)`;
+          });
+        });
+      });
     </script>
   </head>
   <body>
-    <p class="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
-    <p data-name="clicks"><%= it.clicks %></p>
-    <p data-name="scroll"><%= it.scroll %></p>
+    <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
+    <p id="clicks"><%= it.clicks %></p>
+    <p id="scroll"><%= it.scroll %></p>
+    <div id="clock">
+      <p>Tell us about the passing of time,</p>
+      <p>in this room:</p>
+      <p>our fruiting body</p>
+      <p>bursts forth,</p>
+      <p>life stands in place, covered,</p>
+      <p>like a mouse</p>
+      <p>or a mushroom</p>
+    </div>
+    <div></div>
   </body>
 </html>

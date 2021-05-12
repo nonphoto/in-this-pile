@@ -20,7 +20,12 @@ html {
   background-color: var(--beige);
 }
 
-.date {
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#date {
   position: absolute;
   top: 0;
   left: 0;
@@ -29,4 +34,23 @@ html {
   margin: 0;
   color: var(--light-gray);
   font-size: calc(24vw);
+  line-height: 1;
+}
+
+#clock {
+  color: var(--gray);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#clock > * {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
 }
