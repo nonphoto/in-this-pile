@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/nonphoto/in-this-pile/issues"
   },
-  "homepage": "https://github.com/nonphoto/in-this-pile#readme"
+  "homepage": "https://github.com/nonphoto/in-this-pile#readme",
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
+    "socket.io": "^4.1.1"
+  },
+  "engines": {
+    "node": "15.x"
+  }
 }
