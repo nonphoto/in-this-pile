@@ -93,10 +93,11 @@ p {
 }
 
 #posts > *:first-child {
-  color: var(--brown);
+  color: var(--gray-brown);
 }
 
 #graph {
+  color: var(--brown);
   display: flex;
   align-items: center;
   justify-content: space-evenly;
