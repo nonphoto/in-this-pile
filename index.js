@@ -1,117 +1,50 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const http = require("http");
-const { Pool } = require("pg");
-const { Server } = require("socket.io");
-const eta = require("eta");
+import io from "socket.io-client";
+import S from "s-js";
+import SArray from "s-array";
+import { patch } from "@nonphoto/bloom";
 
-console.log("Connecting to database", process.env.DATABASE_URL);
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+const clockElement = document.getElementById("clock");
+const canvas = document.querySelector("#graph > canvas");
+const clicksElement = document.querySelector("#graph > div");
+const context = canvas.getContext("2d");
+
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+context.fillStyle = "transparent";
+context.fillRect(0, 0, canvas.width, canvas.height);
+
+const windowSize = S.data([window.innerWidth, window.innerHeight]);
+window.addEventListener("resize", () => {
+  windowSize([window.innerWidth, window.innerHeight]);
 });
 
-function updateMouse(clicks, scroll) {
-  pool.query(
-    "UPDATE mouse SET clicks = $1, scroll = $2 WHERE id = 1",
-    [clicks, scroll],
-    (error) => {
-      if (error) {
-        throw error;
-      }
-    }
-  );
-}
+const scrollArray = SArray([canvas.textContent]);
+const clicksArray = SArray([clicksElement.textContent]);
 
-function getPosts() {
-  return new Promise((resolve, reject) => {
-    pool.query("SELECT * FROM posts", (error, results) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(results.rows);
-    });
-  });
-}
+const socket = io();
+socket.on("clicks", (clicks) => {
+  console.log(clicks);
+  clicksArray.push(clicks);
+});
+socket.on("scroll", (scroll) => {
+  scrollArray.push(scroll);
+});
 
-console.log("Selecting initial values");
-pool.query("SELECT * FROM mouse", (error, results) => {
-  if (error) {
-    throw error;
-  }
-
-  let { clicks, scroll } = results.rows[0];
-  console.log("Selected initial values", clicks, scroll);
-
-  const app = express();
-  const server = http.createServer(app);
-  const io = new Server(server);
-
-  app.use(cors());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json());
-  app.use(express.static("public"));
-  app.engine("eta", eta.renderFile);
-  app.set("view engine", "eta");
-  app.set("views", "./views");
-  app.get("/", (_, res) => {
-    const date = new Date();
-    getPosts().then((posts) => {
-      res.render("index", {
-        scroll,
-        clicks,
-        posts,
-        hours: date.getHours().toString().padStart(2, "0"),
-        minutes: date.getMinutes().toString().padStart(2, "0"),
-        seconds: date.getSeconds().toString().padStart(2, "0"),
-      });
-    });
-  });
-  app.get("/posts", (_, res) => {
-    pool.query("SELECT * FROM posts", (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.json(results.rows);
-    });
-  });
-  app.post("/posts", (req, res) => {
-    const { title, body } = req.body;
-    pool.query(
-      "INSERT INTO posts (title, body) VALUES ($1, $2)",
-      [title, body],
-      (error) => {
-        if (error) {
-          throw error;
-        }
-        console.log("Inserted new post", title, body);
-      }
-    );
-    res.json(req.body);
-  });
-
-  io.on("connection", (socket) => {
-    console.log("A user connected");
-
-    socket.on("scroll-add", (deltaY) => {
-      scroll += deltaY;
-      io.emit("scroll", scroll);
-      updateMouse(clicks, scroll);
-      console.log("Updated scroll", scroll);
-    });
-
-    socket.on("clicks-add", () => {
-      clicks += 1;
-      io.emit("clicks", clicks);
-      updateMouse(clicks, scroll);
-      console.log("Updated clicks", clicks);
+S.root(() => {
+  const angle = -Math.PI / 2;
+  Array.from(clockElement.children).map((child, index) => {
+    S(() => {
+      const [width, height] = windowSize();
+      const a = angle + (index * Math.PI) / 4;
+      const x = (Math.cos(a) * width) / 2.1;
+      const y = (Math.sin(a) * height) / 2.1;
+      const px = Math.cos(a) * -50 - 50;
+      const py = Math.sin(a) * -50 - 50;
+      child.style.transform = `translate(${x}px, ${y}px)  translate(${px}%, ${py}%)`;
     });
   });
 
-  server.listen(process.env.PORT || 5000, () => {
-    console.log("Listening");
+  patch(clicksElement, {
+    children: clicksArray.map((text) => ({ tagName: "div", children: text })),
   });
 });

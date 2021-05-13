@@ -2,10 +2,11 @@
   "name": "in-this-pile",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node main.js",
+    "build": "npx esbuild index.js --bundle --minify --target=es6 --outfile=public/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,16 @@
   },
   "homepage": "https://github.com/nonphoto/in-this-pile#readme",
   "dependencies": {
+    "@nonphoto/bloom": "^1.0.2",
     "dotenv": "^9.0.2",
+    "esbuild": "^0.11.20",
     "eta": "^1.12.1",
     "express": "^4.17.1",
     "pg": "^8.6.0",
-    "socket.io": "^4.1.1"
+    "s-array": "^0.4.10",
+    "s-js": "^0.4.9",
+    "socket.io": "^4.1.1",
+    "socket.io-client": "^4.1.1"
   },
   "engines": {
     "node": "15.x"

@@ -6,48 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>In This Pile</title>
     <link rel="stylesheet" href="/index.css" />
-    <script type="module">
-      import "/socket.io/socket.io.js";
-      import S from "/s.js";
-
-      const clicksElement = document.getElementById("clicks");
-      const scrollElement = document.getElementById("scroll");
-      const clockElement = document.getElementById("clock");
-
-      const socket = io();
-      socket.on("clicks", (clicks) => {
-        clicksElement.textContent = clicks;
-      });
-      socket.on("scroll", (scroll) => {
-        scrollElement.textContent = scroll;
-      });
-
-      const windowSize = S.data([window.innerWidth, window.innerHeight]);
-      window.addEventListener("resize", () => {
-        windowSize([window.innerWidth, window.innerHeight]);
-      });
-
-      S.root(() => {
-        const angle = -Math.PI / 2;
-        Array.from(clockElement.children).map((child, index) => {
-          S(() => {
-            const [width, height] = windowSize();
-            const a = angle + (index * Math.PI) / 4;
-            const x = (Math.cos(a) * width) / 2.1;
-            const y = (Math.sin(a) * height) / 2.1;
-            const px = Math.cos(a) * -50 - 50;
-            const py = Math.sin(a) * -50 - 50;
-            child.style.transform = `translate(${x}px, ${y}px)  translate(${px}%, ${py}%)`;
-          });
-        });
-      });
-    </script>
+    <script type="module" src="/index.js"></script>
   </head>
   <body>
     <main>
       <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
-      <p id="clicks"><%= it.clicks %></p>
-      <p id="scroll"><%= it.scroll %></p>
       <div id="clock">
         <p>Tell us about the passing of time,</p>
         <p>in this room:</p>
@@ -56,6 +19,10 @@
         <p>life stands in place, covered,</p>
         <p>like a mouse</p>
         <p>or a mushroom</p>
+      </div>
+      <div id="graph">
+        <canvas><%= it.scroll %></canvas>
+        <div><%= it.clicks %></div>
       </div>
       <div id="posts">
         <div>

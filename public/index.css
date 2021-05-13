@@ -95,3 +95,22 @@ p {
 #posts > *:first-child {
   color: var(--brown);
 }
+
+#graph {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#graph > * {
+  flex-basis: 40%;
+}
+
+#graph > canvas {
+  height: 40%;
+}
