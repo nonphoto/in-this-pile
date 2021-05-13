@@ -87,13 +87,16 @@ iframe {
   color: var(--blue);
   padding: 1rem;
 }
+#posts span {
+  display: inline-block;
+}
 
 #posts > * + * {
   margin-top: 1rem;
 }
 
 #posts > * {
-  max-width: 30rem;
+  max-width: 20rem;
 }
 
 #posts > *:first-child {
@@ -113,7 +116,7 @@ iframe {
 }
 
 #graph > * {
-  flex-basis: 40%;
+  flex-basis: 50%;
 }
 
 #graph > canvas {

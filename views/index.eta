@@ -37,8 +37,14 @@
         </div>
         <% it.posts.reverse().forEach((post) => { %>
         <div>
-          <h2><%= post.title %></h2>
-          <p><%= post.body %></p>
+          <h2>
+            <% post.title.split('').forEach((char) => { if (/\S/.test(char)) {
+            -%><span><%= char %></span><%- } else { %><%= char %><% }}) -%>
+          </h2>
+          <p>
+            <%- post.body.split('').forEach((char) => { if (/\S/.test(char)) {
+            -%><span><%= char %></span><%- } else { %><%= char %><% }}) -%>
+          </p>
         </div>
         <% }) %>
       </div>
