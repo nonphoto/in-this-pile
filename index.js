@@ -2,14 +2,20 @@ import io from "socket.io-client";
 import S from "s-js";
 import SArray from "s-array";
 import { patch } from "@nonphoto/bloom";
+import sync from "framesync";
 
 const clicksMaxLength = 10;
 const scrollMaxLength = 500;
+const rainSpeed = 0.002;
+const rainAmount = 1;
 
 const clockElement = document.getElementById("clock");
 const canvas = document.querySelector("#graph > canvas");
 const clicksElement = document.querySelector("#graph > div");
 const context = canvas.getContext("2d");
+const charRows = Array.from(document.querySelectorAll("#posts > * > *")).map(
+  (element) => Array.from(element.querySelectorAll(":scope span"))
+);
 
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
@@ -20,20 +26,11 @@ window.addEventListener("resize", () => {
   windowSize([window.innerWidth, window.innerHeight]);
 });
 
-const time = S.data(0);
-(function tick(t) {
-  time(t);
-  requestAnimationFrame(tick);
-})();
-
 const scrollArray = SArray([Number(canvas.textContent)]);
 const clicksArray = SArray([clicksElement.textContent]);
 
-console.log(scrollArray());
-
 const socket = io();
 socket.on("clicks", (clicks) => {
-  console.log(clicks);
   clicksArray.push(clicks);
   clicksArray(S.sample(clicksArray).slice(-clicksMaxLength));
 });
@@ -43,6 +40,35 @@ socket.on("scroll", (scroll) => {
 });
 
 S.root(() => {
+  charRows.reduce((rowAcc, row, i) => {
+    return row.reduce((acc, char, j) => {
+      const x = (i * 100) / charRows.length;
+      const y = j * 2;
+      char.style.position = "fixed";
+      char.style.left = `${x}vw`;
+      char.style.top = `${y}rem`;
+      sync.render(() => {
+        const offset =
+          Math.floor(
+            Math.sin((acc * 0.1 - performance.now() * rainSpeed) * rainAmount)
+          ) * 0.5;
+        char.style.transform = `translateY(${offset}rem)`;
+      }, true);
+      // S.on(windowSize, () => {
+      //   char.style.transform = "";
+      //   sync.read(() => {
+      //     layout(char.getBoundingClientRect());
+      //   });
+      //   sync.render(() => {
+      //     const x = i * 25 - layout().x;
+      //     const y = j * 50 - layout().y;
+      //     char.style.transform = `translate(${x}px, ${y}px)`;
+      //   });
+      // });
+      return acc + 1;
+    }, rowAcc);
+  }, 0);
+
   const angle = -Math.PI / 2;
   Array.from(clockElement.children).map((child, index) => {
     S(() => {
@@ -60,7 +86,7 @@ S.root(() => {
     children: clicksArray.map((text) => ({ tagName: "div", children: text })),
   });
 
-  S.on(time, () => {
+  sync.update(() => {
     const max = Math.max(...scrollArray());
     const min = Math.min(...scrollArray());
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -76,7 +102,7 @@ S.root(() => {
       );
     });
     context.stroke();
-  });
+  }, true);
 
   S(() => {
     const [width, height] = windowSize();

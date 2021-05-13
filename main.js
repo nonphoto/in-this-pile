@@ -64,6 +64,8 @@ pool.query("SELECT * FROM mouse", (error, results) => {
         scroll,
         clicks,
         posts,
+        description:
+          "In This Pile is a response to our accelerationist behavior, a space to question how we spend time with other forms of life and eachother. It is a compost pile in a small room. It’s mycelium, metal and plastic. Spores and projected pixels. It’s a body and mind. It’s growth and decay. Lines entwined. It’s space to care. A room to pause (time) in. It’s now but it’s not.",
         hours: date.getHours().toString().padStart(2, "0"),
         minutes: date.getMinutes().toString().padStart(2, "0"),
         seconds: date.getSeconds().toString().padStart(2, "0"),

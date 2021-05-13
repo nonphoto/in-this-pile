@@ -27,36 +27,32 @@
       <div id="posts">
         <div>
           <p>
-            In This Pile is a response to our accelerationist behavior, a space
-            to question how we spend time with other forms of life and
-            eachother. It is a compost pile in a small room. It’s mycelium,
-            metal and plastic. Spores and projected pixels. It’s a body and
-            mind. It’s growth and decay. Lines entwined. It’s space to care. A
-            room to pause (time) in. It’s now but it’s not.
+            <% it.description.split('').forEach((char) => { if (/\S/.test(char))
+            { %><span><%= char %></span><% } else { %><%= char %><% }}) %>
           </p>
         </div>
         <% it.posts.reverse().forEach((post) => { %>
         <div>
           <h2>
             <% post.title.split('').forEach((char) => { if (/\S/.test(char)) {
-            -%><span><%= char %></span><%- } else { %><%= char %><% }}) -%>
+            %><span><%= char %></span><% } else { %><%= char %><% }}) %>
           </h2>
           <p>
-            <%- post.body.split('').forEach((char) => { if (/\S/.test(char)) {
-            -%><span><%= char %></span><%- } else { %><%= char %><% }}) -%>
+            <% post.body.split('').forEach((char) => { if (/\S/.test(char)) {
+            %><span><%= char %></span><% } else { %><%= char %><% }}) %>
           </p>
         </div>
         <% }) %>
       </div>
     </main>
-    <iframe
-      class="livestream"
-      src="https://youtube.com/embed/T1LMtq4x7a0?autoplay=1&mute=1&controls=0&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
-      allowfullscreen=""
-      width="560"
-      height="315"
-      frameborder="0"
-      style="width: 100%; height: 100vh; position: relative"
-    ></iframe>
+    <div id="livestream">
+      <iframe
+        src="https://youtube.com/embed/T1LMtq4x7a0?autoplay=1&mute=1&controls=0&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
+        allowfullscreen=""
+        width="560"
+        height="315"
+        frameborder="0"
+      ></iframe>
+    </div>
   </body>
 </html>
