@@ -44,35 +44,46 @@
     </script>
   </head>
   <body>
-    <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
-    <p id="clicks"><%= it.clicks %></p>
-    <p id="scroll"><%= it.scroll %></p>
-    <div id="clock">
-      <p>Tell us about the passing of time,</p>
-      <p>in this room:</p>
-      <p>our fruiting body</p>
-      <p>bursts forth,</p>
-      <p>life stands in place, covered,</p>
-      <p>like a mouse</p>
-      <p>or a mushroom</p>
-    </div>
-    <div id="posts">
-      <div>
-        <p>
-          In This Pile is a response to our accelerationist behavior, a space to
-          question how we spend time with other forms of life and eachother. It
-          is a compost pile in a small room. It’s mycelium, metal and plastic.
-          Spores and projected pixels. It’s a body and mind. It’s growth and
-          decay. Lines entwined. It’s space to care. A room to pause (time) in.
-          It’s now but it’s not.
-        </p>
+    <main>
+      <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
+      <p id="clicks"><%= it.clicks %></p>
+      <p id="scroll"><%= it.scroll %></p>
+      <div id="clock">
+        <p>Tell us about the passing of time,</p>
+        <p>in this room:</p>
+        <p>our fruiting body</p>
+        <p>bursts forth,</p>
+        <p>life stands in place, covered,</p>
+        <p>like a mouse</p>
+        <p>or a mushroom</p>
       </div>
-      <% it.posts.reverse().forEach((post) => { %>
-      <div>
-        <h2><%= post.title %></h2>
-        <p><%= post.body %></p>
+      <div id="posts">
+        <div>
+          <p>
+            In This Pile is a response to our accelerationist behavior, a space
+            to question how we spend time with other forms of life and
+            eachother. It is a compost pile in a small room. It’s mycelium,
+            metal and plastic. Spores and projected pixels. It’s a body and
+            mind. It’s growth and decay. Lines entwined. It’s space to care. A
+            room to pause (time) in. It’s now but it’s not.
+          </p>
+        </div>
+        <% it.posts.reverse().forEach((post) => { %>
+        <div>
+          <h2><%= post.title %></h2>
+          <p><%= post.body %></p>
+        </div>
+        <% }) %>
       </div>
-      <% }) %>
-    </div>
+    </main>
+    <iframe
+      class="livestream"
+      src="http://youtube.com/embed/T1LMtq4x7a0?autoplay=1&mute=1&controls=0&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
+      allowfullscreen=""
+      width="560"
+      height="315"
+      frameborder="0"
+      style="width: 100%; height: 100vh; position: relative"
+    ></iframe>
   </body>
 </html>
