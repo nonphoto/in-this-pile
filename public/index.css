@@ -20,18 +20,41 @@ html {
   background-color: var(--beige);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
 #date {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   text-align: center;
-  margin: 0;
   color: var(--light-gray);
   font-size: calc(24vw);
   line-height: 1;
@@ -39,7 +62,7 @@ body {
 
 #clock {
   color: var(--gray);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -48,9 +71,27 @@ body {
 
 #clock > * {
   margin: 0;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   text-align: center;
   transform: translate(-50%, -50%);
+}
+
+#posts {
+  position: relative;
+  color: var(--blue);
+  padding: 1rem;
+}
+
+#posts > * + * {
+  margin-top: 1rem;
+}
+
+#posts > * {
+  max-width: 30rem;
+}
+
+#posts > *:first-child {
+  color: var(--brown);
 }

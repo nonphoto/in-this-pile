@@ -56,6 +56,23 @@
       <p>like a mouse</p>
       <p>or a mushroom</p>
     </div>
-    <div></div>
+    <div id="posts">
+      <div>
+        <p>
+          In This Pile is a response to our accelerationist behavior, a space to
+          question how we spend time with other forms of life and eachother. It
+          is a compost pile in a small room. It’s mycelium, metal and plastic.
+          Spores and projected pixels. It’s a body and mind. It’s growth and
+          decay. Lines entwined. It’s space to care. A room to pause (time) in.
+          It’s now but it’s not.
+        </p>
+      </div>
+      <% it.posts.reverse().forEach((post) => { %>
+      <div>
+        <h2><%= post.title %></h2>
+        <p><%= post.body %></p>
+      </div>
+      <% }) %>
+    </div>
   </body>
 </html>

@@ -26,6 +26,17 @@ function updateMouse(clicks, scroll) {
   );
 }
 
+function getPosts() {
+  return new Promise((resolve, reject) => {
+    pool.query("SELECT * FROM posts", (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results.rows);
+    });
+  });
+}
+
 console.log("Selecting initial values");
 pool.query("SELECT * FROM mouse", (error, results) => {
   if (error) {
@@ -48,13 +59,38 @@ pool.query("SELECT * FROM mouse", (error, results) => {
   app.set("views", "./views");
   app.get("/", (_, res) => {
     const date = new Date();
-    res.render("index", {
-      scroll,
-      clicks,
-      hours: date.getHours().toString().padStart(2, "0"),
-      minutes: date.getMinutes().toString().padStart(2, "0"),
-      seconds: date.getSeconds().toString().padStart(2, "0"),
+    getPosts().then((posts) => {
+      res.render("index", {
+        scroll,
+        clicks,
+        posts,
+        hours: date.getHours().toString().padStart(2, "0"),
+        minutes: date.getMinutes().toString().padStart(2, "0"),
+        seconds: date.getSeconds().toString().padStart(2, "0"),
+      });
     });
+  });
+  app.get("/posts", (_, res) => {
+    pool.query("SELECT * FROM posts", (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.json(results.rows);
+    });
+  });
+  app.post("/posts", (req, res) => {
+    const { title, body } = req.body;
+    pool.query(
+      "INSERT INTO posts (title, body) VALUES ($1, $2)",
+      [title, body],
+      (error) => {
+        if (error) {
+          throw error;
+        }
+        console.log("Inserted new post", title, body);
+      }
+    );
+    res.json(req.body);
   });
 
   io.on("connection", (socket) => {
