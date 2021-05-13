@@ -48,7 +48,7 @@ pool.query("SELECT * FROM mouse", (error, results) => {
 
   const app = express();
   const server = http.createServer(app);
-  const io = new Server(server, { serveClient: false });
+  const io = new Server(server);
 
   app.use(cors());
   app.use(express.urlencoded({ extended: true }));
