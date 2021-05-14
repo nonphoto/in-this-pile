@@ -1,11 +1,9 @@
 import io from "socket.io-client";
 import S from "s-js";
-import SArray from "s-array";
 import { patch } from "@nonphoto/bloom";
 import sync from "framesync";
 
-const clicksMaxLength = 10;
-const scrollMaxLength = 500;
+const mouseRecordsMaxLength = 500;
 const rainSpeed = 0.002;
 const rainAmount = 1;
 
@@ -26,24 +24,20 @@ window.addEventListener("resize", () => {
   windowSize([window.innerWidth, window.innerHeight]);
 });
 
-const scrollArray = SArray([Number(canvas.textContent)]);
-const clicksArray = SArray([clicksElement.textContent]);
+const mouseRecords = S.data([]);
+
+fetch("/mouse")
+  .then((response) => response.json())
+  .then(mouseRecords);
 
 const socket = io();
-socket.on("clicks", (clicks) => {
-  clicksArray.push(clicks);
-  clicksArray(S.sample(clicksArray).slice(-clicksMaxLength));
-});
-socket.on("scroll", (scroll) => {
-  scrollArray.unshift(scroll);
-  scrollArray(S.sample(scrollArray).slice(-scrollMaxCount));
-});
+socket.on("mouse", mouseRecords);
 
 S.root(() => {
   charRows.reduce((rowAcc, row, i) => {
     return row.reduce((acc, char, j) => {
-      const x = (i * 100) / charRows.length;
-      const y = j * 2;
+      const x = (i * 100) / charRows.length + 1;
+      const y = j * 2 + 1;
       char.style.position = "fixed";
       char.style.left = `${x}vw`;
       char.style.top = `${y}rem`;
@@ -83,22 +77,29 @@ S.root(() => {
   });
 
   patch(clicksElement, {
-    children: clicksArray.map((text) => ({ tagName: "div", children: text })),
+    children: S(() =>
+      mouseRecords()
+        .slice(0, 10)
+        .map(({ clicks }) => ({
+          tagName: "div",
+          children: clicks,
+        }))
+    ),
   });
 
   sync.update(() => {
-    const max = Math.max(...scrollArray());
-    const min = Math.min(...scrollArray());
+    const max = Math.max(...mouseRecords().map(({ scroll }) => scroll));
+    const min = Math.min(...mouseRecords().map(({ scroll }) => scroll));
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
     context.lineWidth = 4;
     context.lineCap = "round";
     context.lineJoin = "round";
     context.strokeStyle = "#665635";
-    scrollArray().map((item, index) => {
+    mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        canvas.width - (index / scrollMaxLength) * canvas.width - 4,
-        ((item - min) / (max - min)) * canvas.height
+        canvas.width - (index / mouseRecordsMaxLength) * canvas.width - 4,
+        ((scroll - min) / (max - min)) * canvas.height
       );
     });
     context.stroke();
