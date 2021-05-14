@@ -11,6 +11,8 @@
   <body>
     <main>
       <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
+      <img id="spores" src="/spores.svg" />
+      <div id="days"><%= it.days %> nights since spawn</div>
       <div id="clock">
         <p>Tell us about the passing of time,</p>
         <p>in this room:</p>
