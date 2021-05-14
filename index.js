@@ -1,5 +1,6 @@
 import io from "socket.io-client";
 import S from "s-js";
+import SArray from "s-array";
 import { patch } from "@nonphoto/bloom";
 import sync from "framesync";
 
@@ -24,20 +25,28 @@ window.addEventListener("resize", () => {
   windowSize([window.innerWidth, window.innerHeight]);
 });
 
-const mouseRecords = S.data([]);
+const mouseRecords = SArray([]);
 
 fetch("/mouse")
   .then((response) => response.json())
   .then(mouseRecords);
 
 const socket = io();
-socket.on("mouse", mouseRecords);
+socket.on("mouse", (message) => {
+  const { scroll, clicks } = S.sample(mouseRecords)[0];
+  const record = {
+    scroll: scroll + message.scroll,
+    clicks: clicks + message.clicks,
+  };
+  mouseRecords.unshift(record);
+  mouseRecords.slice(-500);
+});
 
 S.root(() => {
   charRows.reduce((rowAcc, row, i) => {
     return row.reduce((acc, char, j) => {
-      const x = (i * 100) / charRows.length + 1;
-      const y = j * 2 + 1;
+      const x = (i * 95) / charRows.length + 3;
+      const y = j * 2 + 2;
       char.style.position = "fixed";
       char.style.left = `${x}vw`;
       char.style.top = `${y}rem`;
@@ -80,9 +89,9 @@ S.root(() => {
     children: S(() =>
       mouseRecords()
         .slice(0, 10)
-        .map(({ clicks }) => ({
+        .map(({ clicks, scroll }) => ({
           tagName: "div",
-          children: clicks,
+          children: `${clicks} ${Math.abs(scroll)}`,
         }))
     ),
   });

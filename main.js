@@ -38,7 +38,12 @@ function getMouseGraph() {
         if (error) {
           reject(error);
         }
-        resolve(results.rows);
+        resolve(
+          results.rows.map(({ clicks, scroll }) => ({
+            clicks: Number(clicks),
+            scroll: Number(scroll),
+          }))
+        );
       }
     );
   });
@@ -108,15 +113,15 @@ io.on("connection", (socket) => {
   console.log("A user connected");
 
   socket.on("scroll-add", async (scroll) => {
-    await insertMouseRecord({ scroll });
-    const mouseGraph = await getMouseGraph();
-    io.emit("mouse", mouseGraph);
+    const record = { scroll, clicks: 0 };
+    insertMouseRecord(record);
+    io.emit("mouse", record);
   });
 
   socket.on("clicks-add", async () => {
-    await insertMouseRecord({ clicks: 1 });
-    const mouseGraph = await getMouseGraph();
-    io.emit("mouse", mouseGraph);
+    const record = { scroll: 0, clicks: 1 };
+    insertMouseRecord(record);
+    io.emit("mouse", record);
   });
 });
 
