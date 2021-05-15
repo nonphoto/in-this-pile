@@ -4,17 +4,29 @@ import SArray from "s-array";
 import { patch } from "@nonphoto/bloom";
 import sync from "framesync";
 
+const fitRect = (rect, target) => {
+  var sw = target[2] / rect[2];
+  var sh = target[3] / rect[3];
+  var scale = Math.max(sw, sh);
+  return [
+    target[0] + (target[2] - rect[2] * scale) / 2,
+    target[1] + (target[3] - rect[3] * scale) / 2,
+    rect[2] * scale,
+    rect[3] * scale,
+  ];
+};
+
 const mouseRecordsMaxLength = 500;
-const rainSpeed = 0.002;
-const rainAmount = 1;
 
 const clockElement = document.getElementById("clock");
 const canvas = document.querySelector("#graph > canvas");
 const clicksElement = document.querySelector("#graph > div");
 const context = canvas.getContext("2d");
-const charRows = Array.from(document.querySelectorAll("#posts > * > *")).map(
-  (element) => Array.from(element.querySelectorAll(":scope span"))
+const paragraphElements = Array.from(
+  document.querySelectorAll("#posts > div > *")
 );
+const charsElement = document.getElementById("chars");
+const livestreamElement = document.getElementById("livestream");
 
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
@@ -24,6 +36,14 @@ const windowSize = S.data([window.innerWidth, window.innerHeight]);
 window.addEventListener("resize", () => {
   windowSize([window.innerWidth, window.innerHeight]);
 });
+
+const toggle = S.data(0);
+
+const time = S.data(0);
+(function tick(t) {
+  time(t);
+  requestAnimationFrame(tick);
+})();
 
 const mouseRecords = SArray([]);
 
@@ -43,34 +63,43 @@ socket.on("mouse", (message) => {
 });
 
 S.root(() => {
-  charRows.reduce((rowAcc, row, i) => {
-    return row.reduce((acc, char, j) => {
-      const x = (i * 95) / charRows.length + 3;
-      const y = j * 2 + 2;
-      char.style.position = "fixed";
-      char.style.left = `${x}vw`;
-      char.style.top = `${y}rem`;
-      sync.render(() => {
-        const offset =
-          Math.floor(
-            Math.sin((acc * 0.1 - performance.now() * rainSpeed) * rainAmount)
-          ) * 0.5;
-        char.style.transform = `translateY(${offset}rem)`;
-      }, true);
-      // S.on(windowSize, () => {
-      //   char.style.transform = "";
-      //   sync.read(() => {
-      //     layout(char.getBoundingClientRect());
-      //   });
-      //   sync.render(() => {
-      //     const x = i * 25 - layout().x;
-      //     const y = j * 50 - layout().y;
-      //     char.style.transform = `translate(${x}px, ${y}px)`;
-      //   });
-      // });
-      return acc + 1;
-    }, rowAcc);
-  }, 0);
+  document.body.addEventListener("click", () => {
+    toggle((S.sample(toggle) + 1) % 3);
+  });
+
+  S(() => {
+    document.body.dataset.toggle = toggle();
+  });
+
+  patch(
+    charsElement,
+    paragraphElements
+      .flatMap((element) =>
+        element.textContent.trim().replaceAll(/\s/gm, "  ").split("")
+      )
+      .map((char, i) => {
+        const transform = S(() => {
+          const [width] = windowSize();
+          const offset = i * 64;
+          const x = offset % width;
+          const y = Math.floor(offset / width) * 32;
+          return `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        });
+        return { children: char, style: { transform } };
+      })
+  );
+
+  S(() => {
+    const [windowWidth, windowHeight] = windowSize();
+    const [left, top, width, height] = fitRect(
+      [0, 0, 560, 315],
+      [0, 0, windowWidth, windowHeight]
+    );
+    livestreamElement.style.width = `${width}px`;
+    livestreamElement.style.height = `${height}px`;
+    livestreamElement.style.top = `${top}px`;
+    livestreamElement.style.left = `${left}px`;
+  });
 
   const angle = -Math.PI / 2;
   Array.from(clockElement.children).map((child, index) => {

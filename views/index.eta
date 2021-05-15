@@ -9,52 +9,38 @@
     <script type="module" src="/index.js"></script>
   </head>
   <body>
-    <main>
-      <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
-      <img id="spores" src="/spores.svg" />
-      <div id="days"><%= it.days %> nights since spawn</div>
-      <div id="clock">
-        <p>Tell us about the passing of time,</p>
-        <p>in this room:</p>
-        <p>our fruiting body</p>
-        <p>bursts forth,</p>
-        <p>life stands in place, covered,</p>
-        <p>like a mouse</p>
-        <p>or a mushroom</p>
-      </div>
-      <div id="graph">
-        <canvas><%= it.scroll %></canvas>
-        <div><%= it.clicks %></div>
-      </div>
-      <div id="posts">
-        <div>
-          <p>
-            <% it.description.split('').forEach((char) => { if (/\S/.test(char))
-            { %><span><%= char %></span><% } else { %><%= char %><% }}) %>
-          </p>
-        </div>
-        <% it.posts.reverse().forEach((post) => { %>
-        <div>
-          <h2>
-            <% post.title.split('').forEach((char) => { if (/\S/.test(char)) {
-            %><span><%= char %></span><% } else { %><%= char %><% }}) %>
-          </h2>
-          <p>
-            <% post.body.split('').forEach((char) => { if (/\S/.test(char)) {
-            %><span><%= char %></span><% } else { %><%= char %><% }}) %>
-          </p>
-        </div>
-        <% }) %>
-      </div>
-    </main>
-    <div id="livestream">
-      <iframe
-        src="https://youtube.com/embed/T1LMtq4x7a0?autoplay=1&mute=1&controls=0&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
-        allowfullscreen=""
-        width="560"
-        height="315"
-        frameborder="0"
-      ></iframe>
+    <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
+    <img id="spores" src="/spores.svg" />
+    <div id="days"><%= it.days %> nights since spawn</div>
+    <div id="clock">
+      <p>Tell us about the passing of time,</p>
+      <p>in this room:</p>
+      <p>our fruiting body</p>
+      <p>bursts forth,</p>
+      <p>life stands in place, covered,</p>
+      <p>like a mouse</p>
+      <p>or a mushroom</p>
     </div>
+    <iframe
+      id="livestream"
+      src="https://youtube.com/embed/T1LMtq4x7a0?autoplay=1&mute=1&controls=0&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
+      allowfullscreen=""
+      width="560"
+      height="315"
+      frameborder="0"
+    ></iframe>
+    <div id="graph">
+      <canvas><%= it.scroll %></canvas>
+      <div><%= it.clicks %></div>
+    </div>
+    <div id="posts">
+      <% it.posts.reverse().forEach((post) => { %>
+      <div>
+        <h2><%= post.title %></h2>
+        <p><%= post.body %></p>
+      </div>
+      <% }) %>
+    </div>
+    <div id="chars"></div>
   </body>
 </html>

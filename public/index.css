@@ -29,6 +29,10 @@ body {
   margin: 0;
 }
 
+main {
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -86,9 +90,17 @@ iframe {
   position: relative;
   color: var(--blue);
   padding: 1rem;
+  opacity: 0;
 }
-#posts span {
-  display: inline-block;
+
+[data-toggle="1"] #posts {
+  opacity: 1;
+}
+
+#posts,
+#chars {
+  color: var(--blue);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #posts > * + * {
@@ -99,8 +111,25 @@ iframe {
   max-width: 20rem;
 }
 
-#posts > *:first-child {
-  color: var(--gray-brown);
+#chars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  user-select: none;
+}
+
+[data-toggle="0"] #chars,
+[data-toggle="2"] #chars {
+  opacity: 1;
+}
+
+#chars > * {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 #graph {
@@ -124,19 +153,16 @@ iframe {
 }
 
 #livestream {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: calc(100% * 315 / 560);
-  margin-top: 100vh;
-}
-
-#livestream > iframe {
-  position: absolute;
+  pointer-events: none;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  background: var(--black);
+  opacity: 0;
+}
+
+[data-toggle="2"] #livestream {
+  opacity: 1;
 }
 
 #spores {

@@ -6,9 +6,6 @@ const { Pool } = require("pg");
 const { Server } = require("socket.io");
 const eta = require("eta");
 
-const description =
-  "In This Pile is a response to our accelerationist behavior, a space to question how we spend time with other forms of life and eachother. It is a compost pile in a small room. It’s mycelium, metal and plastic. Spores and projected pixels. It’s a body and mind. It’s growth and decay. Lines entwined. It’s space to care. A room to pause (time) in. It’s now but it’s not.";
-
 console.log("Connecting to database", process.env.DATABASE_URL);
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -90,10 +87,8 @@ app.get("/", async (_, res) => {
   const days = Math.floor(
     (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
   );
-  console.log(days);
   res.render("index", {
     posts,
-    description,
     days,
     hours: date.getHours().toString().padStart(2, "0"),
     minutes: date.getMinutes().toString().padStart(2, "0"),
