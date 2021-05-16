@@ -4,7 +4,7 @@ import SArray from "s-array";
 import { patch } from "@nonphoto/bloom";
 import sync from "framesync";
 
-const fitRect = (rect, target) => {
+function fitRect(rect, target) {
   var sw = target[2] / rect[2];
   var sh = target[3] / rect[3];
   var scale = Math.max(sw, sh);
@@ -14,7 +14,7 @@ const fitRect = (rect, target) => {
     rect[2] * scale,
     rect[3] * scale,
   ];
-};
+}
 
 const mouseRecordsMaxLength = 500;
 
@@ -77,15 +77,25 @@ S.root(() => {
       .flatMap((element) =>
         element.textContent.trim().replaceAll(/\s/gm, "  ").split("")
       )
-      .map((char, i) => {
-        const transform = S(() => {
-          const [width] = windowSize();
-          const offset = i * 64;
-          const x = offset % width;
-          const y = Math.floor(offset / width) * 32;
-          return `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      .slice(0, 500)
+      .map((char, i, array) => {
+        const r = Math.random() * array.length;
+        const l = Math.floor(Math.random() * 5 + 5);
+        return Array.from(Array(l).keys()).map((j) => {
+          const transform = S(() => {
+            const [width, height] = windowSize();
+            const offset = i * 128;
+            const x = offset % width;
+            const y =
+              Math.floor(offset / width) * 32 +
+              (j === 0
+                ? 0
+                : (Math.max(Math.floor(j + r + time() * 0.01) - 250, 0) % 100) *
+                  16);
+            return `translate(${x}px, ${y % height}px) translate(-50%, -50%)`;
+          });
+          return { children: char, style: { transform } };
         });
-        return { children: char, style: { transform } };
       })
   );
 

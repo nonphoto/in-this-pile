@@ -16,7 +16,6 @@
 
 html {
   font-family: ArialPile, Arial, Helvetica, sans-serif;
-  font-size: calc(50% + 1.111vw);
   background-color: var(--beige);
 }
 
@@ -179,4 +178,26 @@ iframe {
   left: 50%;
   color: var(--gold);
   transform: translate(-50%, -50%);
+}
+
+#toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto auto;
+}
+
+#toggle > * {
+  width: 12px;
+  height: 12px;
+  border-radius: 100vw;
+  border: solid white 1px;
+}
+
+[data-toggle="0"] #toggle > *:nth-child(1),
+[data-toggle="1"] #toggle > *:nth-child(2),
+[data-toggle="2"] #toggle > *:nth-child(3) {
+  background: white;
 }
