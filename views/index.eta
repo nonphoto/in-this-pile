@@ -29,11 +29,8 @@
       height="315"
       frameborder="0"
     ></iframe>
-    <div id="chars"></div>
-    <div id="graph">
-      <canvas><%= it.scroll %></canvas>
-      <div><%= it.clicks %></div>
-    </div>
+    <canvas id="canvas"></canvas>
+    <div id="graph"></div>
     <div id="posts">
       <% it.posts.reverse().forEach((post) => { %>
       <div>

@@ -19,18 +19,13 @@ function fitRect(rect, target) {
 const mouseRecordsMaxLength = 500;
 
 const clockElement = document.getElementById("clock");
-const canvas = document.querySelector("#graph > canvas");
-const clicksElement = document.querySelector("#graph > div");
+const canvas = document.getElementById("canvas");
+const graphElement = document.getElementById("graph");
 const context = canvas.getContext("2d");
 const paragraphElements = Array.from(
   document.querySelectorAll("#posts > div > *")
 );
-const charsElement = document.getElementById("chars");
 const livestreamElement = document.getElementById("livestream");
-
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
-context.fillRect(0, 0, canvas.width, canvas.height);
 
 const windowSize = S.data([window.innerWidth, window.innerHeight]);
 window.addEventListener("resize", () => {
@@ -39,11 +34,18 @@ window.addEventListener("resize", () => {
 
 const toggle = S.data(0);
 
-const time = S.data(0);
-(function tick(t) {
-  time(t);
-  requestAnimationFrame(tick);
-})();
+const chars = S(() =>
+  paragraphElements
+    .flatMap((element) =>
+      element.textContent.trim().replaceAll(/\s/gm, "  ").split("")
+    )
+    .slice(0, (windowSize()[0] * windowSize()[1]) / 2000)
+    .map((char, _, array) => {
+      const r = Math.random() * array.length;
+      const l = Math.floor(Math.random() * 5 + 5);
+      return { r, l, char };
+    })
+);
 
 const mouseRecords = SArray([]);
 
@@ -59,7 +61,7 @@ socket.on("mouse", (message) => {
     clicks: clicks + message.clicks,
   };
   mouseRecords.unshift(record);
-  mouseRecords.slice(-500);
+  mouseRecords.slice(-mouseRecordsMaxLength);
 });
 
 S.root(() => {
@@ -70,34 +72,6 @@ S.root(() => {
   S(() => {
     document.body.dataset.toggle = toggle();
   });
-
-  patch(
-    charsElement,
-    paragraphElements
-      .flatMap((element) =>
-        element.textContent.trim().replaceAll(/\s/gm, "  ").split("")
-      )
-      .slice(0, 500)
-      .map((char, i, array) => {
-        const r = Math.random() * array.length;
-        const l = Math.floor(Math.random() * 5 + 5);
-        return Array.from(Array(l).keys()).map((j) => {
-          const transform = S(() => {
-            const [width, height] = windowSize();
-            const offset = i * 128;
-            const x = offset % width;
-            const y =
-              Math.floor(offset / width) * 32 +
-              (j === 0
-                ? 0
-                : (Math.max(Math.floor(j + r + time() * 0.01) - 250, 0) % 100) *
-                  16);
-            return `translate(${x}px, ${y % height}px) translate(-50%, -50%)`;
-          });
-          return { children: char, style: { transform } };
-        });
-      })
-  );
 
   S(() => {
     const [windowWidth, windowHeight] = windowSize();
@@ -124,7 +98,7 @@ S.root(() => {
     });
   });
 
-  patch(clicksElement, {
+  patch(graphElement, {
     children: S(() =>
       mouseRecords()
         .slice(0, 10)
@@ -136,18 +110,45 @@ S.root(() => {
   });
 
   sync.update(() => {
-    const max = Math.max(...mouseRecords().map(({ scroll }) => scroll));
-    const min = Math.min(...mouseRecords().map(({ scroll }) => scroll));
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
+
+    if (S.sample(toggle) !== 1) {
+      S.sample(chars).forEach(({ char, r, l }, i) => {
+        Array.from(Array(l).keys()).map((j) => {
+          const offset = (i * canvas.width) / Math.PI;
+          const h = Math.floor(canvas.height / 64) * 64;
+          const x = offset % canvas.width;
+          const y =
+            (Math.floor(offset / canvas.width) * 64 +
+              (j === 0
+                ? 0
+                : Math.max(
+                    (Math.floor(j + r + performance.now() * 0.01) % 100) - 90,
+                    0
+                  ) * 32)) %
+            h;
+
+          context.fillStyle = "#79a4b5";
+          context.font = "2rem Arial";
+          context.fillText(char, x, y);
+        });
+      });
+    }
+
+    const max = Math.max(...mouseRecords().map(({ scroll }) => scroll));
+    const min = Math.min(...mouseRecords().map(({ scroll }) => scroll));
     context.lineWidth = 4;
     context.lineCap = "round";
     context.lineJoin = "round";
     context.strokeStyle = "#665635";
+    const width = canvas.width / 2;
+    const height = canvas.height / 2;
+
     mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        canvas.width - (index / mouseRecordsMaxLength) * canvas.width - 4,
-        ((scroll - min) / (max - min)) * canvas.height
+        width - (index / mouseRecordsMaxLength) * width - 4,
+        ((scroll - min) / (max - min)) * height + height / 2
       );
     });
     context.stroke();
@@ -155,7 +156,7 @@ S.root(() => {
 
   S(() => {
     const [width, height] = windowSize();
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width * 2;
+    canvas.height = height * 2;
   });
 });
