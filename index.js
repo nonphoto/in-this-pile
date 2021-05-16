@@ -32,6 +32,11 @@ window.addEventListener("resize", () => {
   windowSize([window.innerWidth, window.innerHeight]);
 });
 
+const time = S.data(Date.now());
+setInterval(() => {
+  time(Date.now());
+}, 1000);
+
 const toggle = S.data(0);
 
 const chars = S(() =>
@@ -56,7 +61,8 @@ fetch("/mouse")
 const socket = io();
 socket.on("mouse", (message) => {
   mouseRecords.unshift(message);
-  mouseRecords.slice(-mouseRecordsMaxLength);
+  mouseRecords(S.sample(mouseRecords).slice(0, mouseRecordsMaxLength));
+  console.log(mouseRecords().length);
 });
 
 S.root(() => {
@@ -80,11 +86,11 @@ S.root(() => {
     livestreamElement.style.left = `${left}px`;
   });
 
-  const angle = -Math.PI / 2;
   Array.from(clockElement.children).map((child, index) => {
     S(() => {
+      const t = time() / 1000 / 60 / 60 / 24;
       const [width, height] = windowSize();
-      const a = angle + (index * Math.PI) / 4;
+      const a = t + (index * Math.PI) / 4;
       const x = (Math.cos(a) * width) / 2.1;
       const y = (Math.sin(a) * height) / 2.1;
       const px = Math.cos(a) * -50 - 50;
@@ -119,7 +125,7 @@ S.root(() => {
               (j === 0
                 ? 0
                 : Math.max(
-                    (Math.floor(j + r + performance.now() * 0.01) % 100) - 90,
+                    (Math.floor(j + r + performance.now() * 0.0025) % 100) - 90,
                     0
                   ) * 32)) %
             h;
@@ -137,12 +143,12 @@ S.root(() => {
     context.lineCap = "round";
     context.lineJoin = "round";
     context.strokeStyle = "#6b6558";
-    const width = canvas.width / 4;
+    const width = canvas.width / 8;
     const height = canvas.height / 2;
 
     mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        width - (index / mouseRecordsMaxLength) * width - 4 + width,
+        width - (index / mouseRecordsMaxLength) * width - 4 + width * 3,
         ((scroll - min) / (max - min)) * height + height / 2
       );
     });
