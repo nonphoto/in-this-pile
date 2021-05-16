@@ -24,13 +24,21 @@ function insertMouseRecord({ clicks = 0, scroll = 0 }) {
       }
     }
   );
+  pool.query(
+    "delete from mouse where ID not in (select id from mouse order by created_at desc limit 500)",
+    (error) => {
+      if (error) {
+        throw error;
+      }
+    }
+  );
   console.log("Inserted new mouse record", clicks, scroll);
 }
 
 function getMouseGraph() {
   return new Promise((resolve, reject) => {
     pool.query(
-      "select sum(clicks) over w as clicks, sum(scroll) over w as scroll from mouse window w as (order by created_at) order by created_at desc limit 500",
+      "select * from mouse order by created_at desc",
       (error, results) => {
         if (error) {
           reject(error);
@@ -41,6 +49,24 @@ function getMouseGraph() {
             scroll: Number(scroll),
           }))
         );
+      }
+    );
+  });
+}
+
+function getLastMouseRecord() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "select * from mouse order by created_at desc limit 1",
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        const [{ clicks, scroll }] = results.rows;
+        resolve({
+          clicks: Number(clicks),
+          scroll: Number(scroll),
+        });
       }
     );
   });
@@ -70,56 +96,66 @@ function insertPost({ title, body }) {
   );
 }
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+getLastMouseRecord().then((currentRecord) => {
+  console.log(currentRecord);
+  const app = express();
+  const server = http.createServer(app);
+  const io = new Server(server);
 
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static("public"));
-app.engine("eta", eta.renderFile);
-app.set("view engine", "eta");
-app.set("views", "./views");
-app.get("/", async (_, res) => {
-  const date = new Date();
-  const posts = await getPosts();
-  const days = Math.floor(
-    (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
-  );
-  res.render("index", {
-    posts,
-    days,
-    hours: date.getHours().toString().padStart(2, "0"),
-    minutes: date.getMinutes().toString().padStart(2, "0"),
-    seconds: date.getSeconds().toString().padStart(2, "0"),
+  app.use(cors());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(express.static("public"));
+  app.engine("eta", eta.renderFile);
+  app.set("view engine", "eta");
+  app.set("views", "./views");
+  app.get("/", async (_, res) => {
+    const date = new Date();
+    const posts = await getPosts();
+    const days = Math.floor(
+      (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
+    );
+    res.render("index", {
+      posts,
+      days,
+      hours: date.getHours().toString().padStart(2, "0"),
+      minutes: date.getMinutes().toString().padStart(2, "0"),
+      seconds: date.getSeconds().toString().padStart(2, "0"),
+    });
   });
-});
-app.post("/posts", (req, res) => {
-  insertPost(req.body);
-  res.body("done");
-});
-app.get("/mouse", async (_, res) => {
-  const mouseGraph = await getMouseGraph();
-  res.json(mouseGraph);
-});
-
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("scroll-add", async (scroll) => {
-    const record = { scroll, clicks: 0 };
-    insertMouseRecord(record);
-    io.emit("mouse", record);
+  app.post("/posts", (req, res) => {
+    insertPost(req.body);
+    res.body("done");
+  });
+  app.get("/mouse", async (_, res) => {
+    const mouseGraph = await getMouseGraph();
+    res.json(mouseGraph);
   });
 
-  socket.on("clicks-add", async () => {
-    const record = { scroll: 0, clicks: 1 };
-    insertMouseRecord(record);
-    io.emit("mouse", record);
-  });
-});
+  io.on("connection", (socket) => {
+    console.log("A user connected");
 
-server.listen(process.env.PORT || 5000, () => {
-  console.log("Listening");
+    socket.on("scroll-add", async (scroll) => {
+      console.log(scroll);
+      currentRecord = {
+        scroll: currentRecord.scroll + scroll,
+        clicks: currentRecord.clicks,
+      };
+      insertMouseRecord(currentRecord);
+      io.emit("mouse", currentRecord);
+    });
+
+    socket.on("clicks-add", async () => {
+      currentRecord = {
+        scroll: currentRecord.scroll,
+        clicks: currentRecord.clicks + 1,
+      };
+      insertMouseRecord(currentRecord);
+      io.emit("mouse", currentRecord);
+    });
+  });
+
+  server.listen(process.env.PORT || 5000, () => {
+    console.log("Listening");
+  });
 });

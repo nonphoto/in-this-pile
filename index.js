@@ -55,12 +55,7 @@ fetch("/mouse")
 
 const socket = io();
 socket.on("mouse", (message) => {
-  const { scroll, clicks } = S.sample(mouseRecords)[0];
-  const record = {
-    scroll: scroll + message.scroll,
-    clicks: clicks + message.clicks,
-  };
-  mouseRecords.unshift(record);
+  mouseRecords.unshift(message);
   mouseRecords.slice(-mouseRecordsMaxLength);
 });
 
