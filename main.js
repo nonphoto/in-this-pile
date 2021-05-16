@@ -97,7 +97,7 @@ app.get("/", async (_, res) => {
 });
 app.post("/posts", (req, res) => {
   insertPost(req.body);
-  res.json(req.body);
+  res.body("done");
 });
 app.get("/mouse", async (_, res) => {
   const mouseGraph = await getMouseGraph();

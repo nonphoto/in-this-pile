@@ -109,7 +109,7 @@ iframe {
 }
 
 #graph {
-  color: var(--brown);
+  color: var(--gray-brown);
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

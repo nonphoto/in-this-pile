@@ -104,7 +104,7 @@ S.root(() => {
         .slice(0, 10)
         .map(({ clicks, scroll }) => ({
           tagName: "div",
-          children: `${clicks} ${Math.abs(scroll)}`,
+          children: clicks + scroll,
         }))
     ),
   });
@@ -141,13 +141,13 @@ S.root(() => {
     context.lineWidth = 4;
     context.lineCap = "round";
     context.lineJoin = "round";
-    context.strokeStyle = "#665635";
-    const width = canvas.width / 2;
+    context.strokeStyle = "#6b6558";
+    const width = canvas.width / 4;
     const height = canvas.height / 2;
 
     mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        width - (index / mouseRecordsMaxLength) * width - 4,
+        width - (index / mouseRecordsMaxLength) * width - 4 + width,
         ((scroll - min) / (max - min)) * height + height / 2
       );
     });
