@@ -194,29 +194,29 @@ S.root(() => {
   });
 });
 
-const tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName("script")[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+// const tag = document.createElement("script");
+// tag.src = "https://www.youtube.com/iframe_api";
+// const firstScriptTag = document.getElementsByTagName("script")[0];
+// firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-window.onYouTubeIframeAPIReady = function () {
-  player = new YT.Player("livestream", {
-    videoId: "oTaujkHopfI",
-    playerVars: {
-      playsinline: 1,
-      autoplay: 1,
-      mute: 1,
-      controls: 0,
-      modestbranding: 1,
-      iv_load_policy: 3,
-      rel: 0,
-      showinfo: 0,
-      showsearch: 0,
-    },
-    events: {
-      onReady(event) {
-        event.target.playVideo();
-      },
-    },
-  });
-};
+// window.onYouTubeIframeAPIReady = function () {
+//   player = new YT.Player("livestream", {
+//     videoId: "oTaujkHopfI",
+//     playerVars: {
+//       playsinline: 1,
+//       autoplay: 1,
+//       mute: 1,
+//       controls: 0,
+//       modestbranding: 1,
+//       iv_load_policy: 3,
+//       rel: 0,
+//       showinfo: 0,
+//       showsearch: 0,
+//     },
+//     events: {
+//       onReady(event) {
+//         event.target.playVideo();
+//       },
+//     },
+//   });
+// };

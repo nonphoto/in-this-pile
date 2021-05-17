@@ -23,7 +23,14 @@
       <p>like a mouse</p>
       <p>or a mushroom</p>
     </div>
-    <div id="livestream"></div>
+    <iframe
+      id="livestream"
+      src="https://youtube.com/embed/oTaujkHopfI?autoplay=1&mute=1&controls=0&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&showsearch=0"
+      allowfullscreen=""
+      width="560"
+      height="315"
+      frameborder="0"
+    ></iframe>
     <canvas id="canvas"></canvas>
     <div id="graph"></div>
     <div id="posts">
