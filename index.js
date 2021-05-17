@@ -88,7 +88,10 @@ socket.on("mouse", (message) => {
 S.root(() => {
   document.body.addEventListener("click", () => {
     toggle((S.sample(toggle) + 1) % 3);
-    if (typeof player !== "undefined") {
+    if (
+      typeof player !== "undefined" &&
+      typeof player.playVideo === "function"
+    ) {
       player.playVideo();
     }
   });
