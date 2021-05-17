@@ -105,7 +105,13 @@ iframe {
 }
 
 #posts > * {
-  max-width: 33%;
+  max-width: 30rem;
+}
+
+@media screen and (min-width: 640px) {
+  #posts > * {
+    max-width: 33%;
+  }
 }
 
 #graph {
