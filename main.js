@@ -119,7 +119,7 @@ getLastMouseRecord().then((currentRecord) => {
     res.render("index", {
       posts,
       days,
-      hours: date.getHours().toString().padStart(2, "0"),
+      hours: ((date.getHours() - 4) % 24).toString().padStart(2, "0"),
       minutes: date.getMinutes().toString().padStart(2, "0"),
       seconds: date.getSeconds().toString().padStart(2, "0"),
     });
