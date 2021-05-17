@@ -114,6 +114,8 @@ iframe {
   left: 0;
   height: 67vh;
   width: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
 @media screen and (min-width: 640px) {
@@ -126,6 +128,7 @@ iframe {
     width: 67%;
     left: 33%;
     top: 0;
+    object-position: left;
   }
 }
 
