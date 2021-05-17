@@ -19,6 +19,8 @@ function fitRect(rect, target) {
 const mouseRecordsMaxLength = 500;
 const maxDripSpeed = 0.005;
 
+let player;
+
 const clockElement = document.getElementById("clock");
 const canvas = document.getElementById("canvas");
 const graphElement = document.getElementById("graph");
@@ -88,7 +90,10 @@ socket.on("mouse", (message) => {
 S.root(() => {
   document.body.addEventListener("click", () => {
     toggle((S.sample(toggle) + 1) % 3);
-    if (typeof player !== "undefined") {
+    if (
+      typeof player !== "undefined" &&
+      typeof player.playVideo === "function"
+    ) {
       player.playVideo();
     }
   });
@@ -194,7 +199,6 @@ tag.src = "https://www.youtube.com/iframe_api";
 const firstScriptTag = document.getElementsByTagName("script")[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-let player;
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player("livestream", {
     videoId: "oTaujkHopfI",
