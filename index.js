@@ -59,12 +59,10 @@ fetch("/mouse")
   .then((response) => response.json())
   .then((result) => {
     mouseRecords(result);
-    console.log(result);
   });
 
 const socket = io();
 socket.on("mouse", (message) => {
-  console.log(message);
   mouseRecords.unshift(message);
   mouseRecords(S.sample(mouseRecords).slice(0, mouseRecordsMaxLength));
 });
