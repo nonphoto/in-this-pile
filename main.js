@@ -127,7 +127,7 @@ getLastMouseRecord().then((currentRecord) => {
   });
   app.post("/posts", (req, res) => {
     insertPost(req.body);
-    res.body("done");
+    res.send("Done");
   });
   app.get("/mouse", async (_, res) => {
     const mouseGraph = await getMouseGraph();
