@@ -28,9 +28,9 @@ const paragraphElements = Array.from(
 );
 const livestreamElement = document.getElementById("livestream");
 
-const windowSize = S.data([window.innerWidth, window.innerHeight]);
+const windowSize = S.data([canvas.clientWidth, canvas.clientHeight]);
 window.addEventListener("resize", () => {
-  windowSize([window.innerWidth, window.innerHeight]);
+  windowSize([canvas.clientWidth, canvas.clientHeight]);
 });
 
 const time = S.data(Date.now());
@@ -72,6 +72,7 @@ socket.on("mouse", (message) => {
 S.root(() => {
   document.body.addEventListener("click", () => {
     toggle((S.sample(toggle) + 1) % 3);
+    livestreamElement.playVideo();
   });
 
   S(() => {
