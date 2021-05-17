@@ -57,13 +57,16 @@ const mouseRecords = SArray([]);
 
 fetch("/mouse")
   .then((response) => response.json())
-  .then(mouseRecords);
+  .then((result) => {
+    mouseRecords(result);
+    console.log(result);
+  });
 
 const socket = io();
 socket.on("mouse", (message) => {
+  console.log(message);
   mouseRecords.unshift(message);
   mouseRecords(S.sample(mouseRecords).slice(0, mouseRecordsMaxLength));
-  console.log(mouseRecords().length);
 });
 
 S.root(() => {
@@ -133,7 +136,7 @@ S.root(() => {
             h;
 
           context.fillStyle = "#79a4b5";
-          context.font = "2rem Arial";
+          context.font = "32px Arial";
           context.fillText(char, x, y);
         });
       });
