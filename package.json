@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node main.js",
     "build": "npx esbuild index.js --bundle --minify --target=es6 --outfile=public/index.js",
-    "watch": "npx esbuild index.js --bundle --minify --target=es6 --outfile=public/index.js --watch"
+    "watch": "npx esbuild index.js --bundle --minify --target=es6 --outfile=public/index.js --watch",
+    "psql": "heroku pg:psql postgresql-round-33811 --app in-this-pile",
+    "dev": "heroku local"
   },
   "repository": {
     "type": "git",

@@ -195,7 +195,11 @@ iframe {
 }
 
 #description {
-  color: ;
+  color: var(--tan);
+}
+
+#description * + * {
+  margin-top: 1rem;
 }
 
 [data-toggle="0"] #toggle > *:nth-child(1),
