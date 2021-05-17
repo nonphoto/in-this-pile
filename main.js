@@ -111,6 +111,7 @@ getLastMouseRecord().then((currentRecord) => {
   app.set("views", "./views");
   app.get("/", async (_, res) => {
     const date = new Date();
+    date.setHours(date.getHours() + 1);
     const posts = await getPosts();
     const days = Math.floor(
       (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
