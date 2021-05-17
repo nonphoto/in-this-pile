@@ -69,7 +69,7 @@ fetch("/water")
 
 const dripSpeed = S(() => {
   if (lastWatered()) {
-    const t = 1 - (time() - lastWatered() / 1000 / 60 / 60 / 12);
+    const t = 1 - (time() - lastWatered()) / 1000 / 60 / 60 / 12;
     return Math.max(Math.min(t, 1), 0) * maxDripSpeed;
   } else {
     return 0;
