@@ -136,7 +136,6 @@ getLastMouseRecord().then((currentRecord) => {
     console.log("A user connected");
 
     socket.on("scroll-add", async (scroll) => {
-      console.log(scroll);
       currentRecord = {
         scroll: currentRecord.scroll + scroll,
         clicks: currentRecord.clicks,

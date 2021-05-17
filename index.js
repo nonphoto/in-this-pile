@@ -17,6 +17,7 @@ function fitRect(rect, target) {
 }
 
 const mouseRecordsMaxLength = 500;
+const dripSpeed = 0.005; // 12 hours
 
 const clockElement = document.getElementById("clock");
 const canvas = document.getElementById("canvas");
@@ -105,7 +106,7 @@ S.root(() => {
         .slice(0, 10)
         .map(({ clicks, scroll }) => ({
           tagName: "div",
-          children: clicks + scroll,
+          children: `${scroll}${clicks}`,
         }))
     ),
   });
@@ -125,7 +126,8 @@ S.root(() => {
               (j === 0
                 ? 0
                 : Math.max(
-                    (Math.floor(j + r + performance.now() * 0.0025) % 100) - 90,
+                    (Math.floor(j + r + performance.now() * dripSpeed) % 100) -
+                      90,
                     0
                   ) * 32)) %
             h;
@@ -148,7 +150,7 @@ S.root(() => {
 
     mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        width - (index / mouseRecordsMaxLength) * width - 4 + width * 3,
+        width - (index / mouseRecordsMaxLength) * width - 4 + width * 2,
         ((scroll - min) / (max - min)) * height + height / 2
       );
     });
