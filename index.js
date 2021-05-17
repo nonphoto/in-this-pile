@@ -154,7 +154,7 @@ S.root(() => {
 
     mouseRecords().map(({ scroll }, index) => {
       context[index === 0 ? "moveTo" : "lineTo"](
-        width - (index / mouseRecordsMaxLength) * width - 4 + width * 2,
+        width - (index / mouseRecordsMaxLength) * width - 4 + width * 3,
         ((scroll - min) / (max - min)) * height + height / 2
       );
     });

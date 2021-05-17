@@ -11,6 +11,7 @@
   </head>
   <body>
     <p id="date"><%= it.time %></p>
+    <img id="notes" src="/a-mycological-foray.svg" />
     <img id="spores" src="/spores.svg" />
     <div id="days"><%= it.days %> nights since spawn</div>
     <div id="clock">
@@ -32,6 +33,27 @@
         <p><%= post.body %></p>
       </div>
       <% }) %>
+      <div id="description">
+        <p>
+          In This Pile is a response to our accelerationist behavior, a space to
+          question how we spend time with other forms of life and eachother. It
+          is a compost pile inside a small room. It’s mycelium, metal and
+          plastic. Spores and projected pixels. It’s a body and mind. It’s
+          growth and decay. Lines entwined. It’s space to care. A room to pause
+          (time) in. It’s now: it’s not.
+        </p>
+        <p>
+          The image in tan is from John Cage: A Mycological Foray, “Mushroom
+          Book,” John Cage, Lois Long, Alexander H. Smith.
+        </p>
+        <p>
+          This site was built by Jonas Luebbers and Pancho Blood. The mouse was
+          built by Lucas Yasunaga. The blue oyster mushrooms were spawned with
+          Dylan Hausthor. Thanks to Anna Sagström, Armando Cortes, Bryant Wells,
+          Han Gao, Jeemin Shim, Mike Tully, Ryan Waller and Zoila Coc-Chang for
+          feedback and support.
+        </p>
+      </div>
     </div>
     <div id="toggle">
       <div></div>

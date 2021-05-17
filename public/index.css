@@ -7,9 +7,9 @@
   --beige: #f2ece4;
   --gold: #bda475;
   --gray-brown: #6b6558;
-  --light-gray: #cfcbc7;
+  --light-gray: #d1d1d1;
   --gray: #ababab;
-  --brown: #665635;
+  --tan: #c6bcac;
   --blue: #79a4b5;
   --black: #161717;
 }
@@ -108,9 +108,24 @@ iframe {
   max-width: 30rem;
 }
 
+#notes {
+  position: fixed;
+  top: 33vh;
+  left: 0;
+  height: 67vh;
+  width: 100%;
+}
+
 @media screen and (min-width: 640px) {
   #posts > * {
     max-width: 33%;
+  }
+
+  #notes {
+    height: 100vh;
+    width: 67%;
+    left: 33%;
+    top: 0;
   }
 }
 
@@ -157,8 +172,8 @@ iframe {
 
 #days {
   position: fixed;
-  top: 50%;
-  left: 50vh;
+  left: 50%;
+  top: 50vh;
   color: var(--gold);
   transform: translate(-50%, -50%);
 }
@@ -177,6 +192,10 @@ iframe {
   height: 12px;
   border-radius: 100vw;
   border: solid white 1px;
+}
+
+#description {
+  color: ;
 }
 
 [data-toggle="0"] #toggle > *:nth-child(1),
