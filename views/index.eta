@@ -10,7 +10,7 @@
     <script type="module" src="/index.js"></script>
   </head>
   <body>
-    <p id="date"><%= it.hours %>:<%= it.minutes %>:<%= it.seconds %></p>
+    <p id="date"><%= it.time %></p>
     <img id="spores" src="/spores.svg" />
     <div id="days"><%= it.days %> nights since spawn</div>
     <div id="clock">

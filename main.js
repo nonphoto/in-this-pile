@@ -111,7 +111,6 @@ getLastMouseRecord().then((currentRecord) => {
   app.set("views", "./views");
   app.get("/", async (_, res) => {
     const date = new Date();
-    console.log(date.toString());
     const posts = await getPosts();
     const days = Math.floor(
       (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
@@ -119,9 +118,10 @@ getLastMouseRecord().then((currentRecord) => {
     res.render("index", {
       posts,
       days,
-      hours: ((date.getHours() - 4) % 24).toString().padStart(2, "0"),
-      minutes: date.getMinutes().toString().padStart(2, "0"),
-      seconds: date.getSeconds().toString().padStart(2, "0"),
+      time: date.toLocaleTimeString("en-US", {
+        hour12: false,
+        timeZone: "EST",
+      }),
     });
   });
   app.post("/posts", (req, res) => {
