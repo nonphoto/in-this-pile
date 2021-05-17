@@ -96,6 +96,26 @@ function insertPost({ title, body }) {
   );
 }
 
+function getLastWatered() {
+  return new Promise((resolve, reject) => {
+    pool.query("select updated_at from water limit 1", (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results.rows[0]);
+    });
+  });
+}
+
+function updateWater() {
+  pool.query("update water set updated_at = now() where id = 1", (error) => {
+    if (error) {
+      throw error;
+    }
+    console.log("Updated water");
+  });
+}
+
 getLastMouseRecord().then((currentRecord) => {
   console.log(currentRecord);
   const app = express();
@@ -113,6 +133,7 @@ getLastMouseRecord().then((currentRecord) => {
     const date = new Date();
     date.setHours((date.getHours() + 1) % 24);
     const posts = await getPosts();
+    const lastWatered = await getLastWatered();
     const days = Math.floor(
       (date - new Date("March 19, 2021, 00:00:00")) / 1000 / 60 / 60 / 24
     );
@@ -132,6 +153,14 @@ getLastMouseRecord().then((currentRecord) => {
   app.get("/mouse", async (_, res) => {
     const mouseGraph = await getMouseGraph();
     res.json(mouseGraph);
+  });
+  app.post("/water", (_, res) => {
+    updateWater();
+    res.send("Done");
+  });
+  app.get("/water", async (_, res) => {
+    const lastWatered = await getLastWatered();
+    res.json(lastWatered);
   });
 
   io.on("connection", (socket) => {

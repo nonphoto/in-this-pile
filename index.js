@@ -17,7 +17,7 @@ function fitRect(rect, target) {
 }
 
 const mouseRecordsMaxLength = 500;
-const dripSpeed = 0.005; // 12 hours
+const maxDripSpeed = 0.005;
 
 const clockElement = document.getElementById("clock");
 const canvas = document.getElementById("canvas");
@@ -54,12 +54,27 @@ const chars = S(() =>
 );
 
 const mouseRecords = SArray([]);
-
 fetch("/mouse")
   .then((response) => response.json())
   .then((result) => {
     mouseRecords(result);
   });
+
+const lastWatered = S.data();
+fetch("/water")
+  .then((response) => response.json())
+  .then(({ updated_at }) => {
+    lastWatered(new Date(updated_at));
+  });
+
+const dripSpeed = S(() => {
+  if (lastWatered()) {
+    const t = 1 - (time() - lastWatered() / 1000 / 60 / 60 / 12);
+    return Math.max(Math.min(t, 1), 0) * maxDripSpeed;
+  } else {
+    return 0;
+  }
+});
 
 const socket = io();
 socket.on("mouse", (message) => {
@@ -130,7 +145,10 @@ S.root(() => {
               (j === 0
                 ? 0
                 : Math.max(
-                    (Math.floor(j + r + performance.now() * dripSpeed) % 100) -
+                    (Math.floor(
+                      j + r + performance.now() * S.sample(dripSpeed)
+                    ) %
+                      100) -
                       90,
                     0
                   ) * 32)) %

@@ -14,16 +14,24 @@
         color: white;
       }
 
-      form {
+      fieldset {
         width: 100%;
         max-width: 30rem;
+        border: solid 1px rgba(255, 255, 255, 0.5);
       }
 
-      form * + * {
+      form,
+      fieldset {
+        display: flex;
+        flex-direction: column;
+      }
+
+      body > * + *,
+      fieldset > * + * {
         margin-top: 1rem;
       }
 
-      form > div {
+      fieldset > div {
         display: flex;
         flex-direction: column;
       }
@@ -49,17 +57,25 @@
       }
     </style>
     <form action="/posts" method="post">
-      <div>
-        <label for="title">Title: </label>
-        <input type="text" name="title" id="title" required />
-      </div>
-      <div>
-        <label for="body">Body: </label>
-        <textarea name="body" id="body" required></textarea>
-      </div>
-      <div>
-        <input type="submit" value="Submit" />
-      </div>
+      <fieldset>
+        <div>
+          <label for="title">Title: </label>
+          <input type="text" name="title" id="title" required />
+        </div>
+        <div>
+          <label for="body">Body: </label>
+          <textarea name="body" id="body" required></textarea>
+        </div>
+        <div>
+          <input type="submit" value="Submit" />
+        </div>
+      </fieldset>
+    </form>
+    <form action="/water" method="post">
+      <fieldset>
+        <label for="water">Click after watering: </label>
+        <input type="submit" value="Water" id="water" />
+      </fieldset>
     </form>
   </body>
 </html>
